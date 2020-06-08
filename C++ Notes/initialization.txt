@@ -1,0 +1,16 @@
+
+https://stackoverflow.com/questions/1051379/is-there-a-difference-between-copy-initialization-and-direct-initialization
+
+Delving into Initializations Direct and Copy initialization
+
+While they look identical and are supposed to do the same, these two forms are remarkably different in certain cases. The two forms of initialization are direct and copy initialization:
+
+T t(x);
+T t = x;
+
+There is behavior we can attribute to each of them:
+
+    Direct initialization behaves like a function call to an overloaded function: The functions, in this case, are the constructors of T (including explicit ones), and the argument is x. Overload resolution will find the best matching constructor, and when needed will do any implicit conversion required.
+    Copy initialization constructs an implicit conversion sequence: It tries to convert x to an object of type T. (It then may copy over that object into the to-initialized object, so a copy constructor is needed too - but this is not important below)
+
+As you see, copy initialization is in some way a part of direct initialization with regard to possible implicit conversions: While direct initialization has all constructors available to call, and in addition can do any implicit conversion it needs to match up argument types, copy initialization can just set up one implicit conversion sequence. 

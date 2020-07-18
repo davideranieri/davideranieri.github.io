@@ -4,7 +4,7 @@
 
 ## ***POINTERS***
 
-Declaring a variable means reserving a memory area including severel locations
+Declaring a variable means reserving a memory area including several locations
 
 Each location has a physical address and:
 
@@ -22,11 +22,11 @@ When *declaring* a pointer you **must** also specify what type of object the poi
 
 Syntax:
 
-    TYPE *NAME;
+    TYPE * NAME;
 
 ## Dereferencing a pointer
 
-Using the **dreferencing `*` operator** to a pointer variable. `*p` indicates the content of the location pointed by `p`
+Using the **dereferencing `*` operator** to a pointer variable. `*p` indicates the content of the location pointed by `p`
 
 *EXAMPLE:*
 
@@ -39,17 +39,23 @@ Using the **dreferencing `*` operator** to a pointer variable. `*p` indicates th
     x = 3;
     p = &x;
 
-**Warning:** The symbol `*` is used both in the declaration and in the dereferencing
+**Warning:** The symbol `*` is used both in the declaration and in the dereferencing.
 
 ***FUNCTIONS PARAMETERS***
 
 - **Declaration**
+
+```c++
     RETURN_TYPE FUNCTION_NAME (PARAMETERS);
+```
 
 - **Definition**
+  
+```c++
     RETURN_TYPE FUNCTION_NAME (PARAMETERS) {
         ...
     }
+```
 
 Parameters are called *formal arguments*
 
@@ -78,7 +84,7 @@ The function works in its environment on the formal parameters (and consequently
 
 Parameters passing is always by value. To implement pass by reference we need to rely on pointers
 
-## Pass by reference
+### Pass by reference
 
 Ingredients:
 
@@ -93,10 +99,10 @@ Ingredients:
         double res;
         res = *radius * 3.14 * 2;
         *radius = 7;
-
+    
         return res;
     }
-
+    
     // somewhere in the main
     double c;
     double r = 5;
@@ -127,7 +133,7 @@ A reference **MUST be initialized**, and the value of a reference **CAN'T be cha
 
     int x = 9;
     int y = 8;
-
+    
     int &r = x;
     r = 10;                             // OK: now x = 10
     r = &y;                             // ERROR: can't change what r refers to
@@ -143,21 +149,23 @@ A **pointer** is a *compound type* that "points to" another type
 
 **Like** reference, pointer is used to **indirect access**
 
-**Unlike** reference, pointer **is an object**: pointer **can be assigned** and **copied; a single pointer can point to several different objects over its lifetime. Unlike a reference, a pointer does not need to be initialized at the time it's defined**
+**Unlike** reference, pointer **is an object**: pointer **can be assigned** and **copied; a single pointer can point to several different objects over its lifetime. Unlike a reference, a pointer does not need to be initialised at the time it's defined**
 
-Like other built-in types, pointers defined at block scope have underfined value if they are not initialized!
+Like other built-in types, pointers defined at block scope have undefined value if they are not initialised!
 
 `&` and `*` are both **operator in an expression** and **part of declaration**
 
 *EXAMPLE:*
 
-    int i = 42;
-    int &r = i;                         // & follows a type; part of declaration; reference
-    
-    int *p;                             // * follows a type; part of declaration; pointer
+```c++
+int i = 42;
+int &r = i;                         // & follows a type; part of declaration; reference
 
-    p = &i;                             // & in expression; address-of operator
-    *p = i;                             // * in expression; dereference operator
+int *p;                             // * follows a type; part of declaration; pointer
+
+p = &i;                             // & in expression; address-of operator
+*p = i;                             // * in expression; dereference operator
+```
 
 ## ***`const` QUALIFIER***
 
@@ -165,9 +173,11 @@ Aim: define a variable whose value cannot be changed
 
 *EXAMPLE:*
 
-    const int bufSize = 512;            // same as constexpr!
+```c++
+const int bufSize = 512;            // same as constexpr!
+```
 
-Because value can't be changed, **it must be initialized**
+Because value can't be changed, **it must be initialised**
 
 By default, `const` objects **local** to a file
 
@@ -181,63 +191,72 @@ Unlike ordinary reference, a *reference to const can't be used to change the obj
 
 *EXAMPLE:*
 
-    const int ci = 1024;
-    const int &r1 = ci;                 // OK: both reference and object are const
+```c++
+const int ci = 1024;
+const int &r1 = ci;                 // OK: both reference and object are const
 
-    r1 = 42;                            // ERROR: r1 is a reference to const
-    
-    int &r2 = ci                        // ERROR: r2 not const reference to a const object
+r1 = 42;                            // ERROR: r1 is a reference to const
+
+int &r2 = ci                        // ERROR: r2 not const reference to a const object
+```
 
 ## C++ pass by reference
 
 - **C** relies on **pointers**
 - **C++** relies on **references**
   
+
 **Const references** can be used to pass **large objects** in **read only**, avoiding any side effect
 
 *EXAMPLE:* swap of 2 integers - **C**
 
-    void swap (int *p, int *q) {
-        int temp;
-        temp = *p;
-        *p = *q;
-        *q = temp;
-    }
+```c++
+void swap (int *p, int *q) {
+    int temp;
+    temp = *p;
+    *p = *q;
+    *q = temp;
+}
 
-    // in main
-    swap(&a,&b);
+// in main
+swap(&a,&b);
+```
 
 *EXAMPLE:* swap of 2 integers - **C++**
 
-    void swap(int &p, int &q) {
-        int temp;
-        temp = p;
-        p = q;
-        q = temp;
-    }
+```c++
+void swap(int &p, int &q) {
+    int temp;
+    temp = p;
+    p = q;
+    q = temp;
+}
 
-    // in main
-    swap(a,b);
+// in main
+swap(a,b);
+```
 
-Reconsidering the example of computing circonference, we have
+Reconsidering the example of computing circumference, we have
 
 *EXAMPLE:*
 
-    double circ(double &radius) {
-        double res;
-        res = radius * 3.14 * 2;
-        radius = 7;                     // we get COMPILE ERROR, need to delete this line
+```c++
+double circ(double &radius) {
+    double res;
+    res = radius * 3.14 * 2;
+    radius = 7;                     // we get COMPILE ERROR, need to delete this line
 
-        return res;
-    }
+    return res;
+}
 
-    // somewhere in the main
-    double c;
-    double r = 5;
-    c = circ(r);                       // r is 5.0
+// somewhere in the main
+double c;
+double r = 5;
+c = circ(r);                       // r is 5.0
 
-    // What about circ(22.0), i.e., of a value, not a object?
-    // A TEMPORARY CONST OBJECT is created, initialized with 22.0 and this allows function to be executed
+// What about circ(22.0), i.e., of a value, not a object?
+// A TEMPORARY CONST OBJECT is created, initialized with 22.0 and this allows function to be executed
+```
 
 ## Guidance for passing variables
 
@@ -247,12 +266,14 @@ Reconsidering the example of computing circonference, we have
 
 *EXAMPLE:*
 
-    class Image {
-        ...
-    };
+```c++
+class Image {
+    ...
+};
 
-    void f(Image i);                    // YES copy; this could be slow
+void f(Image i);                    // YES copy; this could be slow
 
-    void f(Image &i);                   // NO copy; f() CAN modify
+void f(Image &i);                   // NO copy; f() CAN modify
 
-    void f(const Image &i);             // NO copy; f() CAN'T modify
+void f(const Image &i);             // NO copy; f() CAN'T modify
+```

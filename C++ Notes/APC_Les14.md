@@ -1,6 +1,6 @@
 # **Algorithms and Parallel Computing - C++: Notes**
 
-# Lesson 14 - Inheritance, part 2
+# **Lesson 14 - Inheritance, part 2**
 
 ## Derived-to-Base Conversion
 
@@ -12,10 +12,12 @@ There is no similar guarantee for base-class objects: a base-class object can ex
 
 *EXAMPLE:*
 
-    Bulk_quote* bulkPnt = &base;        // ERROR: can't convert base to derived
-    Bulk_quote& bulkRef = base;         // ERROR: can't convert base to derived
+```c++
+Bulk_quote * bulkPnt = &base;        // ERROR: can't convert base to derived
+Bulk_quote & bulkRef = base;         // ERROR: can't convert base to derived
+```
 
-We can't convert from base to derived even when a base pointer or reference is bound to a derived object.
+We **can't convert from base to derived even when a base pointer or reference is bound to a derived object**.
 
 2. **No conversion between objects**
 
@@ -23,23 +25,25 @@ The automatic derived-to-base conversion applies only for **conversions to a ref
 
 When we initialize or assign:
 
-- when we initialize, we're calling a copy constructor
-- when we assign, we're calling an assignment operator
-- these members normally have a parameter that is a reference to the const version of the class type
+- when we *initialize*, we're calling a *copy constructor*
+- when we *assign*, we're calling an *assignment operator*
+- these members normally have a parameter that is a *r2eference to the const version of the class type*
 
-Because these members take references, the derived-to-base conversion lets s pass a derived object to a base-class copy operation.
+Because these members take references, the derived-to-base conversion lets  pass a derived object to a base-class copy operation.
 
 **These operations are not virtual** (which is related to polymorphism):
 when we pass a derived object to a base-class *constructor*, the constructor that is run is defined in the base class. If we *assign* a derived object to a base object, the assignment operator that is run is the one defined in the base class.
 
 *EXAMPLE:*
 
-    Bulk_quote bulk;
-    Quote item(bulk);
-    item = bulk;
+```c++
+Bulk_quote bulk;
+Quote item(bulk);
+item = bulk;
 
-    // because the Bulk_quote part is ignored, we say that
-    // the Bulk_quote portion is sliced down
+// because the Bulk_quote part is ignored, we say that
+// the Bulk_quote portion is sliced down
+```
 
 ## ***CONTAINERS AND INHERITANCE***
 
@@ -54,35 +58,39 @@ For example, consider to declare a vector that tries to store `Quote` and `Bulk_
 
 *EXAMPLE:*
 
-    vector<Quote*> basket;
-    basket.push_back(new Quote("0-201-88888-1", 50));
-    basket.push_back(new Bulk_quote("0-201-99999-2", 50, 10, 0.25));
+```c++
+vector<Quote*> basket;
+basket.push_back(new Quote("0-201-88888-1", 50));
+basket.push_back(new Bulk_quote("0-201-99999-2", 50, 10, 0.25));
 
-    // here remind to delete objects before you exit!
+// here remind to delete objects before you exit!
 
-    vector<shared_ptr<Quote>> basket;
-    basket.push_back(make_shared<Quote>("0-201-88888-1", 50));
-    basket.push_back(make_shared<Bulk_quote>("0-201-99999-2", 50, 10, 0.25));
+vector<shared_ptr<Quote>> basket;
+basket.push_back(make_shared<Quote>("0-201-88888-1", 50));
+basket.push_back(make_shared<Bulk_quote>("0-201-99999-2", 50, 10, 0.25));
 
-    // here you can forget to delete objects before you exit
+// here you can forget to delete objects before you exit
+```
 
 ## ***VIRTUAL FUNCTIONS***
 
-**Dynamic binding** happens when a virtual member function is called through a reference or a pointer to a base-class type.
+**Dynamic binding** happens when a virtual member function is called *through a reference or a pointer* to a base-class type.
 
 Calls to virtual functions **may** be resolved at *run time*. When a virtual function is called through a reference or pointer, the compiler generates code to decide at run time which function to call. the function that is called is te one that corresponds to the **dynamic type** of the object bound to pointer or reference.
 
 *EXAMPLE:*
 
-    // Dynamic (run time) binding
-    Quote base("0-201-82470-1", 50);
-    print_total(cout, base, 10);                        // calls Quote::net_price
-    Bulk_quote derived("0-201-82470-1", 50, 5, .19);
-    print_total(cout, derived, 10);                     // calls Bulk_quote::net_price
+```c++
+// Dynamic (run time) binding
+Quote base("0-201-82470-1", 50);
+print_total(cout, base, 10);                        // calls Quote::net_price
+Bulk_quote derived("0-201-82470-1", 50, 5, .19);
+print_total(cout, derived, 10);                     // calls Bulk_quote::net_price
 
-    // Static (compile time) binding
-    base = derived;
-    base.net_price(20);                                 // calls Quote::net_price
+// Static (compile time) binding
+base = derived;
+base.net_price(20);                                 // calls Quote::net_price
+```
 
 ## Virtual functions in a derived class return type
 
@@ -100,7 +108,7 @@ A derived class constructor initializes its **direct** base class only, *i.e.* t
 
 ## Virtual Destructors
 
-A base class generally should define a virtual destructor.
+A **base class** generally should define a **virtual destructor**.
 
 Destructor needs to be virtual to allow objects in the inheritance hierarchy to be **dynamically allocated**.
 
@@ -112,17 +120,19 @@ If that pointer points to a type in an inheritance hierarchy, it's possible that
 
 *EXAMPLE:*
 
-    class Quote {
-        ...
-        public:
-            virtual ~Quote() = default;             // dynamic binding for destructor
-    };
+```c++
+class Quote {
+    ...
+    public:
+        virtual ~Quote() = default;             // dynamic binding for destructor
+};
 
-    Quote *itemP = new Quote;                       // same static and dynamic type
-    delete itemP;                                   // destructor for Quote called
+Quote * itemP = new Quote;                      // same static and dynamic type
+delete itemP;                                   // destructor for Quote called
 
-    itemP = new Bulk_quote;                         // static and dynamic types differ
-    delete itemP;                                   // destructor for Bulk_quote called
+itemP = new Bulk_quote;                         // static and dynamic types differ
+delete itemP;                                   // destructor for Bulk_quote called
+```
 
 ## Derived-Class Destructor
 
@@ -130,12 +140,14 @@ Base-class parts of an object are also implicitly destroyed. As a result a deriv
 
 *EXAMPLE:*
 
-    class Derived : public Base {
-        public:
-            ~Derived() {
-                // do what it takes to clean up derived members
-            }   // Base::~Base invoked automatically
-    }
+```c++
+class Derived : public Base {
+    public:
+        ~Derived() {
+            // do what it takes to clean up derived members
+        }   // Base::~Base invoked automatically
+}
+```
 
 ## ***CLASSES (C++) VS. STRUCTS & FUNCTIONS (C)***
 
@@ -146,61 +158,63 @@ Base-class parts of an object are also implicitly destroyed. As a result a deriv
 
 *EXAMPLE:* CAD program
 
-    // C version - Structs and functions
+```c++
+// C version - Structs and functions
 
-    Enum ShapeType {circle, square};
+Enum ShapeType {circle, square};
 
-    struct Shape {
-        ShapeType itsType;
-    };
+struct Shape {
+    ShapeType itsType;
+};
 
-    struct Circle {
-        ShapeType itsType;
-        double itsRadius;
-        Point itsCenter;
-    };
+struct Circle {
+    ShapeType itsType;
+    double itsRadius;
+    Point itsCenter;
+};
 
-    struct Square {
-        ShapeType itsType;
-        double itsSide;
-        Point itsTopLeft;
-    };
+struct Square {
+    ShapeType itsType;
+    double itsSide;
+    Point itsTopLeft;
+};
 
-    void drawSquare(struct Square *);
-    void drawCircle(struct Circle *);
-    void drawAllShapes(ShapePointer list[], int n) {
-        for (int i=0; i<n; ++i) {
-            struct shape* s = list[i];
-            switch (s->itsType) {
-                case square:
-                    drawSquare((struct Square *) s);
-                    break;
-                case circle:
-                    drawSquare((struct Circle *) s);
-                    break;
-            }
+void drawSquare(struct Square *);
+void drawCircle(struct Circle *);
+void drawAllShapes(ShapePointer list[], int n) {
+    for (int i=0; i<n; ++i) {
+        struct shape* s = list[i];
+        switch (s->itsType) {
+            case square:
+                drawSquare((struct Square *) s);
+                break;
+            case circle:
+                drawSquare((struct Circle *) s);
+                break;
         }
     }
+}
 
-    // To add new shapes we need to change this function implementation
+// To add new shapes we need to change this function implementation
 
-    // C++ version - Classes
+// C++ version - Classes
 
-    class Shape {
-        public:
-            virtual draw() const = 0;               // pure virtual function
-    };
+class Shape {
+    public:
+        virtual draw() const = 0;               // pure virtual function
+};
 
-    struct Circle : public Shape {
-        double itsRadius;
-        Point itsCenter;
+struct Circle : public Shape {
+    double itsRadius;
+    Point itsCenter;
 
-        void draw() const override;
-    };
+    void draw() const override;
+};
 
-    struct Square : public Shape {
-        double itsSide;
-        Point itsTopLeft;
+struct Square : public Shape {
+    double itsSide;
+    Point itsTopLeft;
 
-        void draw() const override;
-    };
+    void draw() const override;
+};
+```

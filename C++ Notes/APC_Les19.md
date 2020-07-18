@@ -1,6 +1,6 @@
 # **Algorithms and Parallel Computing - C++: Notes**
 
-# Lesson 19 - Templates
+# **Lesson 19 - Templates**
 
 STL allows us to define and use collections of different types; for example, the element type is a "parameter" of the vector. 
 
@@ -17,13 +17,17 @@ Templates are used to provide **generic definitions of functions or classes**, a
 
 - **Class Template**
 
-        template<typename T, int N>
-        class Buffer { };               // between < > goes the parameter list
+    ```c++
+    template<typename T, int N>
+    class Buffer { };               // between < > goes the parameter list
+    ```
 
 - **Function Template**
 
-        template<typename T, int N>
-        void fill (Buffer<T,N> & b) { }
+    ```c++
+    template<typename T, int N>
+    void fill (Buffer<T,N> & b) { }
+    ```
 
 ## What is a Template parameter?
 
@@ -35,9 +39,11 @@ Just like regular function parameters can be used to pass values to a function, 
 
 When the compiler generates a class, function or static data members from a template is called **template instantiation**. Using the previous example of template definitions:
 
-    Buffer<char, 1024> buf;
+```c++
+Buffer<char, 1024> buf;
 
-    fill(buf)
+fill(buf)
+```
 
 Templates are **not** normal functions or classes. At that moment, when an instantiation is required, the compiler generates a function or a class **specifically** for those arguments from the template.
 
@@ -48,7 +54,7 @@ When the compiler sees the definition of a template, it **does not** generate co
 *This affects how we organize our source code and when errors are detected.*
 
 - **Ordinarily**, when we call a function, the compiler needs to see only a declaration for the function. Similarly, when we need use objects of class type, the class definition must be available, but the definitions of the member functions need not be present. Class definitions and function declarations in header files, definitions of ordinary and class-member functions in source files.
-- When we define templates: to geneaate an instantiation, the compiler needs to have the code that defines a function template or class template member function. As a result, **headers for templates typically include definitions as well as declarations**.
+- When we define templates: to generate an instantiation, the compiler needs to have the code that defines a function template or class template member function. As a result, **headers for templates typically include definitions as well as declarations**.
 - **Compilation errors** are mostly **reported during instantiation**. Three stages during which the **compiler** might flag an error:
   1. When we parse the code of the template itself: the compiler generally can't find many errors at this stage
   2. When the compiler sees a use of the template:
@@ -64,22 +70,26 @@ In C++ this is obtained with **template parameters**.
 
 *EXAMPLE:*  `max` function
 
-    template<typename T>
-    T max (T a, T b) {
-        if  (a>b)
-            return a;
-        else
-            return b;
-    }
+```c++
+template<typename T>
+T max (T a, T b) {
+    if  (a>b)
+        return a;
+    else
+        return b;
+}
+```
 
 *EXAMPLE:*  `compare` function
 
-    template <typename T>
-    int compare (const T & v1, const T & v2) {
-        if (v1<v2) return -1;
-        if (v2<v1) return 1;                                        // in this way, used only < operator, not >
-        return 0;
-    }
+```c++
+template <typename T>
+int compare (const T & v1, const T & v2) {
+    if (v1<v2) return -1;
+    if (v2<v1) return 1;                                        // in this way, used only < operator, not >
+    return 0;
+}
+```
 
 ## Writing Type-Independent Code
 
@@ -87,7 +97,9 @@ The **function parameters** in the template are **references to const**. We ensu
 
 ## Template + STL Container 
 
-    template< typename container_type>
+```c++
+template<typename container_type>
+```
 
 ## Functions and Function Templates
 
@@ -105,19 +117,21 @@ The compiler **can't** deduce the template parameter(s) type for a class templat
 
 *EXAMPLE:*
 
-    std::vector v;                      // ERROR
+```c++
+std::vector v;                      // ERROR
 
-    // basically, vector<T> is:
-    template<typename T> class vector {
-        private
-            int sz;
-            T * elem;
-        public:
-            T & operator[ ] (int n) { return elem[n]; }
-            int size() const { return sz; }
-            void push_back(const T & d);
-            ...
-    };l
+// basically, vector<T> is:
+template<typename T> class vector {
+    private
+        int sz;
+        T * elem;
+    public:
+        T & operator[ ] (int n) { return elem[n]; }
+        int size() const { return sz; }
+        void push_back(const T & d);
+        ...
+};l
+```
 
 ## Final Considerations
 

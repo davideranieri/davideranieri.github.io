@@ -14,24 +14,26 @@ The *theoretical* study of computer-program **performance** and **resource-usage
 
 ## **Insertion Sort** - C++
 
-    void InsertionSort (std::vector<int> &A)
+```c++
+void InsertionSort (std::vector<int> &A)
+{
+    int i;
+    int j;
+    int key;
+    
+    for (j = 1; j < A.size(); j++)
     {
-        int i;
-        int j;
-        int key;
-        
-        for (j = 1; j < A.size(); j++)
+        key = A[j];
+        i = j - 1;
+        while (i >= 0 && A[i] > key)
         {
-            key = A[j];
-            i = j - 1;
-            while (i >= 0 && A[i] > key)
-            {
-                A[i+1] = A[i];
-                i = i - 1;
-            }
-            A[i+1] = key;
+            A[i+1] = A[i];
+            i = i - 1;
         }
+        A[i+1] = key;
     }
+}
+```
 
 ## Running time
 
@@ -47,7 +49,7 @@ Parametrize the running time by the size of the input, since short sequences are
 `T(n)`: *maximum* time of algorithm on any input of size `n`
 
 2. **Average case** (sometimes)
-`T(n)`: *expected* time of algorithm over all inputs of sice `n`
+`T(n)`: *expected* time of algorithm over all inputs of size `n`
 
 3. **Best case** (bogus)
 cheat with a slow algorithm that works fast on *some* input
@@ -65,7 +67,7 @@ Math:
 $\Theta(g(n))=\left\{f(n):\exist~ c_1,c_2,n_0>0 ~ s.t. ~ \forall n \geq n_0 ~ 0 \leq c_1g(n) \leq f(n) \leq c_2g(n)\right\}$
 
 Engineering:
-Drop low-order tems, ignore leading constants
+Drop low-order terms, ignore leading constants
 
 Asymptotic performance
 
@@ -87,24 +89,26 @@ $a_{1}, ..., a_{n}$
 
 ## **Merge Sort** - C++
 
-    void merge_sort(std::vector<int> &A)
-    {
-        std::vector<int> A1;
-        std::vector<int> A2;
+```c++
+void merge_sort(std::vector<int> &A)
+{
+    std::vector<int> A1;
+    std::vector<int> A2;
 
-        if (A.size() == 1) return;
+    if (A.size() == 1) return;
 
-        for (int i = A.size()/2; i < A.size(); i++)
-            A1.push_back(A[i]);
+    for (int i = A.size()/2; i < A.size(); i++)
+        A1.push_back(A[i]);
 
-        for (int i = A.size()/2; i < A.size(); i++)
-            A2.push_back(A[i]);
-        
-        merge_sort(A1);
-        merge_sort(A2);
+    for (int i = A.size()/2; i < A.size(); i++)
+        A2.push_back(A[i]);
+    
+    merge_sort(A1);
+    merge_sort(A2);
 
-        A = merge(A1,A2);
-    }
+    A = merge(A1,A2);
+}
+```
 
 $T(n) = \Theta(n)$ (linear time)
 
@@ -139,7 +143,7 @@ $O(g(n)) = \left\{f(n) : \exist c > 0, n_{0} > 0 s.t. \forall 0 \leq f(n) \leq c
 
 $\Omega(g(n)) = \left\{ f(n) : \exist c > 0, n_0 > 0 s.t. \forall 0 \leq cg(n) \leq f(n) \right\}$
 
-*EXAMPLE:* $\sqrt{n} in \Omega(\log n )$
+*EXAMPLE:* $\sqrt{n} \in \Omega(\log n )$
 
 ## **$\Theta$**-notation (tight bounds)
 
@@ -149,4 +153,4 @@ $\Theta(g(n)) = O(g(n)) \cap \Omega(g(n))$
 
 Keep in mind that sometimes in the literature **O**-notation informally describe asymptotically tight bounds, that is, what we have defined using **$\Theta$**-notation
 
-[img] http://bigocheatsheet.com
+[!img] http://bigocheatsheet.com

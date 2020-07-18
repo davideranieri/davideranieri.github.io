@@ -1,19 +1,19 @@
 # **Algorithms and Parallel Computing - C++: Notes**
 
-# Lesson 13 - Standard Template Library, part 2
+# **Lesson 13 - Standard Template Library, part 2**
 
 ## Sequential and Associative containers
 
 ![containers-all](containers_all.png)
 
 - Elements in a sequential container are stored and accessed sequentially by their position in the container.
-- Elements in an associative container are stored and retrieved by a key
+- Elements in an associative container are stored and retrieved by a key.
 
 ## ***CONTAINER ADAPTORS***
 
 Container **adaptors** are interfaces created on top of a (limited) set of functionalities of a pre-existing sequential container.
 
-When you declare the container adapters, there's an option of specifying which sequential container to use as underlying container.
+When you declare the container adaptors, there's an option of specifying which sequential container to use as underlying container.
 
 - `stack`
   - Last-In, First-Out (LIFO) access
@@ -30,7 +30,7 @@ When you declare the container adapters, there's an option of specifying which s
 
 ## ***ASSOCIATIVE CONTAINERS***
 
-Associative containers support the general containe operations. They do not support the sequential container position-specific operations, such as `push_front`.
+Associative containers support the general container operations. They do not support the sequential container position-specific operations, such as `push_front`.
 
 They have:
 
@@ -43,8 +43,8 @@ They have:
 
 - `<map>`: `map` holds key-value pairs; `multimap` is a map in which one key can appear multiple times
 - `<set>`: `set` is a container where the key is the value; `multiset` is a set in which one key can appear multiple times
-- `<unordered-map>`: `unordered-map` is a map organized by a hash function; `unordered-multimap` is such that keys can appear multiple times
-- `<unordered-set>`: `unordered-set` is a set organized by a hash function; `unordered-multiset` is such that keys can appear multiple times
+- `<unordered-map>`: `unordered-map` is a map organised by a hash function; `unordered-multimap` is such that keys can appear multiple times
+- `<unordered-set>`: `unordered-set` is a set organised by a hash function; `unordered-multiset` is such that keys can appear multiple times
 
 ## `std::map`
 
@@ -56,12 +56,14 @@ Values in a map are found by a key.
 
 *EXAMPLE:*
 
-    map<string, size_t> word_count;                     // string is the key
-    string word;
-    while (cin >> word)
-        ++word_count[word];
-    for (const auto &w : word_count)                    // reference to const: access but no modify
-        ...
+```c++
+map<string, size_t> word_count;                     // string is the key
+string word;
+while (cin >> word)
+    ++word_count[word];								// example of using subscript operator with not an int, but the key
+for (const auto &w : word_count)                    // reference to const: access but no modify
+    ...
+```
 
 Implementation of a `map`: by a red-black trees, self-balancing binary search-tree. Insert and delete have complexity of O(log n) at worst case.
 
@@ -71,12 +73,16 @@ A `set` is simply a collection of objects. It's most useful when we simply want 
 
 *EXAMPLE:*
 
-    if (bad_checks.find("Mario") == bad_checks.end())   // .end() returns iterator referring to the past-the-end element
-        cout << "Mario is okay";
-    else
-        cout << "Mario is bad";
+```c++
+if (bad_checks.find("Mario") == bad_checks.end())   // .end() returns iterator referring to the past-the-end element
+    cout << "Mario is okay";
+else
+    cout << "Mario is bad";
+```
 
 Implementation of a `set`: by a red-black trees, self-balancing binary search tree. Insert and delete have complexity of O(log n) at worst case.
+
+So **insert and delete for an ordered set has complexity O(log n)**
 
 ## Associative vs. Sequential containers
 
@@ -89,7 +95,7 @@ The associative container **iterators** are always **bidirectional**.
 
 ## Requirements on key **type**
 
-For the **ordered containers** (map, set) the key type must define a way to compare the elements; by default, the library uses the `<` to compare the keys. We can also supply our own `<` operation to use a strict weak ordering over the key type.
+For the **ordered containers** (`map`, `set`) the **key type must define a way to compare the elements**; by default, the library uses the `<` to compare the keys. We can also supply our own `<` operation to use a strict weak ordering over the key type.
 
 ## The `pair` type
 
@@ -97,10 +103,12 @@ A `pair` is a **library type**, defined in the `utility` header, which *holds tw
 
 *EXAMPLE:*
 
-    pair<string, string> alfa;
-    pair<string, vector<int>> line;
+```c++
+pair<string, string> alfa;
+pair<string, vector<int>> line;
+```
 
-**Elements in a map are `pair`s**; so, when we define a map by given (key, value)-tuple, we implicitly convert this tuple in pair.
+**Elements in a map are `pair` type**; so, when we define a map by given (key, value)-tuple, we implicitly convert this tuple in pair.
 
 The data members of `pair` are **public**, and are named `first` and `second`.
 
@@ -114,8 +122,10 @@ The data members of `pair` are **public**, and are named `first` and `second`.
 
 *EXAMPLE:*
 
-    map<string, int>::key_type v4;              // v4 is a string
-    map<string, int>::mapped_type v5;           // v5 is a int
+```c++
+map<string, int>::key_type v4;              // v4 is a string
+map<string, int>::mapped_type v5;           // v5 is a int
+```
 
 **Remember:** key is a `const`; `value_type` of a map is a pair and that we can change the value but not the key member of that pair. The keys in a `set` are also const, so we can use a `set` iterator to read but not to write an element's value.
 
@@ -131,12 +141,16 @@ Because (unordered) `map` and (unordered) `set` contain unique keys, inserting e
 
 *EXAMPLE:*
 
-    multimap<string, string> authors;
-    authors.insert({"Barth, John", "Lost in the Funhouse"});
+```c++
+multimap<string, string> authors;
+authors.insert({"Barth, John", "Lost in the Funhouse"});
 
-    // insert returns always only an iterator to the inserted element
+// insert returns always only an iterator to the inserted element
+```
 
 ![erasing-elements-associative](erasing-elements-associative.png)
+
+`erase` works also for sequential containers.
 
 ## Subscripting a `map`
 
@@ -150,15 +164,17 @@ It is **not possible** to subscript a `multimap` or a `multiset` because there m
 
 *EXAMPLE:*
 
-    map<string, size_t> word_count;
-    word_count["Anna"] = 1;
+```c++
+map<string, size_t> word_count;
+word_count["Anna"] = 1;
 
-    // the element is not found
-    // a new key-value pair is inserted
-    // the key is a const string "Anna"
+// the element is not found
+// a new key-value pair is inserted
+// the key is a const string "Anna"
 
-    // another way
-    word_count.insert(make_pair("Anna", 1));
+// another way
+word_count.insert(make_pair("Anna", 1));
+```
 
 ## Accessing Elements
 
@@ -175,7 +191,7 @@ Lower and upper bound are **not valid** for unordered containers, in that case i
 
 Use of a **hash function** to map elements to buckets:
 
-- given the **item key**, identify the proper bucket to store; different keys with the same hash value are stored in the same bucket and originate a collision
+- given the **item key**, identify the proper bucket to store; **different keys with the same hash value are stored in the same bucket and originate a collision**
 - all the elements with a given has value are stored in the same bucket
 - all the elements with the same key will be in the same bucket
 

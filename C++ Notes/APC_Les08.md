@@ -10,16 +10,18 @@
 
 *EXAMPLE:*
 
-    // friend declarations for nonmember added in the class
-    class Sales_data {
+```c++
+// friend declarations for nonmember added in the class
+class Sales_data {
 
-        friend Sales_data operator+(const Sales_data&, const Sales_data&);
-        public:
-        private:
-    };
+    friend Sales_data operator+(const Sales_data&, const Sales_data&);
+    public:
+    private:
+};
 
-    // declaration for nonmember parts of the Sales_data interface
-    Sales_data operator+(const Sales_data&, const Sales_data&);
+// declaration for nonmember parts of the Sales_data interface
+Sales_data operator+(const Sales_data&, const Sales_data&);
+```
 
 A friend declaration **only specifies access**. **IT IS NOT** a general declaration of the function. We **must** also declare the function separately from the friend declaration, usually in the same header as the class itself.
 
@@ -42,11 +44,13 @@ Even though static members are not part of the objects of its class, we can use 
 
 *EXAMPLE:*
 
-    Account ac1;
-    Account *ac2 = &ac1;
+```c++
+Account ac1;
+Account *ac2 = &ac1;
 
-    r = ac1.rate();                     // through object or reference
-    r = ac2->rate();                    // through pointer
+r = ac1.rate();                     // through object or reference
+r = ac2->rate();                    // through pointer
+```
 
 - **can define** static member function **inside or outside** of the class body. When we define a static member outside the class, we do not repeat the static keyword. The keyword `static` appears **only with the declaration inside the class body** (as `friend`).
 

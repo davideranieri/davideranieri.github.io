@@ -4,24 +4,28 @@
 
 ## Overloaded functions
 
-Functions (methods) that have the *same name* but **different parameter** lists and that appear in the **same scope** are **overloaded**
+Functions (methods) that have the *same name* but **different parameter** lists and that **appear** in the **same scope** are **overloaded**
 
 *EXAMPLE:*
 
-    void print(const char *cp);
-    void print(const int ia[], size_t size);
+```c++
+void print(const char *cp);
+void print(const int ia[], size_t size);
 
-    int j[2] = {0,1);
+int j[2] = {0,1);
 
-    print("Hello World");               // calls print(const char*)
-    print(j,2)                          // calls print(const int*, size_t)
+print("Hello World");               // calls print(const char*)
+print(j,2)                          // calls print(const int*, size_t)
+```
 
 Overloaded functions **must differ** in the **number** *or* the **type(s)** of their parameters
 
 *EXAMPLE:*
 
-    Record lookup(const Account&);
-    bool lookup(const Account&);        // ERROR: only the return type is different
+```c++
+Record lookup(const Account&);
+bool lookup(const Account&);        // ERROR: only the return type is different
+```
 
 ## Calling an overloaded function
 
@@ -31,7 +35,7 @@ For any given call to an overloaded function, there are three possible outcomes:
 
 - the compiler finds **exactly** one function that is a best match
 - *Error*: **no match**
-- more than one function that matches; *Error*: **ambiguos call**
+- more than one function that matches; *Error*: **ambiguous call**
 
 1. **candidate functions**: identify the set of overloaded functions considered for the call
 2. **viable functions**: select those that can be called with the arguments in the given call
@@ -57,9 +61,11 @@ A parameter that has a top-level const is indistinguishable from one without a t
 
 *EXAMPLE:*
 
-    Record lookup(Account &);           // takes a reference
+```c++
+Record lookup(Account &);           // takes a reference
 
-    Record lookup(const Account&)       // takes a const reference
+Record lookup(const Account&)       // takes a const reference
+```
 
 ## Overloading member functions of a class
 
@@ -69,11 +75,13 @@ We can overload a member function based on whether it is `const`.
 
 *EXAMPLE:* 
 
-    class C{
+```c++
+class C{
 
-        f() const;
+    f() const;
 
-        f();
-    }
+    f();
+}
+```
 
-We can only call `const` member functions on a `const` object
+**We can only call `const` member functions on a `const` object**

@@ -1,6 +1,6 @@
 # **Algorithms and Parallel Computing - C++: Notes**
 
-# Lesson 15 - Introduction to Parallel Computing
+# **Lesson 15 - Introduction to Parallel Computing**
 
 ## What is Parallel Computing?
 

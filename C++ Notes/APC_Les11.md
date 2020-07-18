@@ -17,7 +17,7 @@ Containers implement a **like-a-value semantic**.
 
 Algorithms are **independent** of containers, reducing complexity of the library.
 
-STL achieves its results through the use of **templates**: *compile-time polymorphism* that is often more efficient than traditional run-time polymorphism.
+STL achieves its results through the use of **templates**: *compile-time polymorphism* that is often more efficient than traditional *run-time polymorphism*.
 
 ## STL - Container Classes
 
@@ -37,7 +37,7 @@ Each container has different performance and functionality trade-offs.
 1. **fast sequential access**
 2. performance trade-offs:
    - **add/delete** elements
-   - **non-sequential access**
+   - **non-sequential access** (*e.g.* fast random access)
 
 - `vector`: flexible-size array. Supports **fast random** (so non-sequential) **access**. Slow add/delete elements, except **fast add/delete at back**.
 - `deque`: double-ended queue. Supports **fast random access**. **Fast add/delete at front and at back**.
@@ -46,51 +46,57 @@ Each container has different performance and functionality trade-offs.
 - `array`: fixed-size array. Supports **fast random access**. **Not allowed add/delete**.
 - `string`: specialized container (characters only), similar to vector. **Fast random access**. **Fast add/delete at back**.
 
-## How are `vector`s implemented?
+## How is `vector` implemented?
 
-    class vector {
-        private:
-            unsigned sz;
-            double* elem;
-        public:
-            vector(unsigned s): size(s), elem{new double[s]} {}
-            ~vector() { delete[] elem; }
+```c++
+class vector {
+    private:
+        unsigned sz;
+        double * elem;
+    public:
+        vector(unsigned s): size(s), elem{new double[s]} {}
+        ~vector() { delete[] elem; }
 
-            double get(unsigned n) const { return elem[n]; }        // access: read
-            void set(unsigned n, double v) { elem[n] = v; }         // access: write
-            unsigned size() { return sz; }
-    };
+        double get(unsigned n) const { return elem[n]; }        // access: read
+        void set(unsigned n, double v) { elem[n] = v; }         // access: write
+        unsigned size() { return sz; }
+};
+```
 
 ## ACCESS
 
-Let's define the operator of assignment for vector (note, in the example, the `[]` is applied on built-in arrays)
+Let's define the operator of assignment for vector (note, in the example, the `[]` is applied on built-in arrays). As already said above, `vector` is a sequential container that supports fast random access (as `deque`, `array` and `string`)
 
 1. via *pointer*
 
-        class vector {
-            ...
-            public:
-                double* operator[] (unsigned n) { return &elem[n]; }
-            ...
-        };
-
-        vector v(10);
-        for (unsigned i = 0; i < v.size(); ++i) {
-            *v[i] = i;                                  //  derefence operator, because v[i] returns a pointer
-        }
+    ```c++
+    class vector {
+        ...
+        public:
+            double* operator[] (unsigned n) { return &elem[n]; }
+        ...
+    };
+    
+    vector v(10);
+    for (unsigned i = 0; i < v.size(); ++i) {
+        *v[i] = i;                                  //  derefence operator, because v[i] returns a pointer; think as *(v[i])
+    }
+    ```
 
 2. via *reference*
 
-        class vector {
-            ...
-            public:
-                double& operator[] (unsigned n) { return elem[n]; }
-            ...
-        };
-
-        for (unsigned i = 0; i < v.size(); ++i) {
-            v[i] = i;
-        }
+    ```c++
+    class vector {
+        ...
+        public:
+            double& operator[] (unsigned n) { return elem[n]; }
+        ...
+};
+    
+    for (unsigned i = 0; i < v.size(); ++i) {
+        v[i] = i;
+    }
+    ```
 
 ## Changing `vector` size
 
@@ -104,14 +110,16 @@ Three methods:
 
 If you `resize` or `push_back`, it's good to keep a bit of free space for future expansion:
 
-    class vector {
-        private:
-            unsigned sz;
-            double* elem;
-            unsigned space;             // number of elements plus "free space"
-        public:
-            ...
-    };
+```c++
+class vector {
+    private:
+        unsigned sz;
+        double * elem;
+        unsigned space;             // number of elements plus "free space"
+    public:
+        ...
+};
+```
 
 ## How a `vector` grows
 
@@ -122,7 +130,7 @@ If there is no room for the new element:
 1. the container must allocate new memory;
 2. move the elements from the old location into the new space;
 3. add the new element;
-4. deallocate the old memory.
+4. de-allocate the old memory.
 
 When they have to get new memory, vector and string implementations typically **allocate capacity beyond** what is immediately **needed**.
 
@@ -130,18 +138,20 @@ When they have to get new memory, vector and string implementations typically **
 
 It doesn't mess with size or element values.
 
-    void vector::reserve(unsigned newalloc) 
-    {
-        // make the vector have space for newalloc elements
+```c++
+void vector::reserve(unsigned newalloc) 
+{
+    // make the vector have space for newalloc elements
 
-        if (newalloc <= space) return;
-        double* p = new double[newalloc];
-        for (unsigned i = 0; i < sz; ++i)
-            p[i] = elem[i];
-        delete[] elem;
-        elem = p;
-        space = newalloc;
-    }
+    if (newalloc <= space) return;
+    double * p = new double[newalloc];
+    for (unsigned i = 0; i < sz; ++i)
+        p[i] = elem[i];
+    delete[] elem;
+    elem = p;
+    space = newalloc;
+}
+```
 
 Algorithm Complexity: **O(sz)**
 
@@ -152,31 +162,35 @@ Given `reserve`, `resize` is easy:
 - `reserve` deals with space/allocation
 - `resize` deals with element values
 
-        void vector::resize(unsigned newsize; double t = 0.0)
-        {
-            // make the vector have newsize elements
-
-            reserve(newsize);
-            for (unsigned i = sz; i < newsize; ++i)
-                elem[i] = t;
-            sz = newsize;
-        }
+    ```c++
+    void vector::resize(unsigned newsize; double t = 0.0)
+    {
+    // make the vector have newsize elements
+    
+        reserve(newsize);
+        for (unsigned i = sz; i < newsize; ++i)
+            elem[i] = t;
+        sz = newsize;
+    }
+    ```
 
 Algorithm Complexity: **O(newsize)**
 
 ## `vector::push_back()`
 
-    void vector::push_back(double d)
-    {
-        // increase vector size by one, initilialize new element with d
+```c++
+void vector::push_back(double d)
+{
+    // increase vector size by one, initilialize new element with d
 
-        if (sz == 0)                    // no space: grab some
-            reserve(8);
-        else if(sz == space)
-            reserve(2*space;)
-        elem[sz] = d;
-        ++sz;
-    }
+    if (sz == 0)                    // no space: grab some
+        reserve(8);
+    else if(sz == space)
+        reserve(2*space;)
+    elem[sz] = d;
+    ++sz;
+}
+```
 
 Algorithm Complexity: **O(space)**
 
@@ -195,11 +209,11 @@ The strategies of storing impact on the efficiency of the operations.
 - `list` implements a **doubly-linked list**
 - `forward_list` implements a **singly-linked list**
 
-`list` and `forward_list` are designed to make it fast to add or remove an element anywhere in the container; in exchange, they don't support random access to elements; only **access from begin to the end**. Memory **overhead** (additional space reserved) is significant. No `size` operation.
+- `list` and `forward_list` are designed to make it fast to add or remove an element anywhere in the container; in exchange, they don't support random access to elements; only **access from begin to the end**. Memory **overhead** (additional space reserved) is significant. No `size` operation.
 
-`deque` is a more complicated data structure: like `string` and `vector`, it supports fast random access; adding/removing elements in the middle of a deque is an expensive operation; adding/removing elements at either front or end is a fast operation.
+- `deque` is a more complicated data structure: like `string` and `vector`, it supports fast random access; adding/removing elements in the middle of a deque is an expensive operation; adding/removing elements at either front or end is a fast operation.
 
-`array` is a safer, easier-to-use **alternative** to built-in arrays and has fixed-size.
+- `array` is a safer, easier-to-use **alternative** to built-in arrays and has fixed-size.
 
 ## Which Sequential Container to Use?
 
@@ -213,9 +227,7 @@ The strategies of storing impact on the efficiency of the operations.
 - If the program needs random access and needs to insert and delete elements in the middle, evaluate between `list`/`forward_list` and `vector`/`deque`.
 - If **not sure** which to use, write using *only operations common to both vectors and lists*: **use iterators, not subscript** and **avoid random access** to elements.
 
-## Container common types
-
-![container-common-types](container-common-types.png)
+## Container common types<img src="container-common-types.png" alt="container-common-types" style="zoom: 80%;" />
 
 ## Container common operations
 
@@ -237,7 +249,7 @@ Note: `forward_list` iterators do not support decrement operator `--`.
 
 ![iterators-2](iterators-2.png)
 
-Note: these operatrions apply only to iterators `string`, `vector`, `deque`, `array`, **not for** `list`, `forward_list`.
+Note: these operations, **specific for random access**, apply only to iterators `string`, `vector`, `deque`, `array`, **not for** `list`, `forward_list`(the ones that don't support random access).
 
 ## Iterators Ranges
 
@@ -247,7 +259,7 @@ Left-inclusive interval: **[begin, end)**
 
 ## Assignment operator
 
-The assignment operator replaces the entire range of elements in the left-hand container with **copier** of the elements from the right-hand operand. After an assignment, the left- and right-hand containers are equal.
+The assignment operator replaces the entire range of elements in the left-hand container with **copies** of the elements from the right-hand operand. After an assignment, the left- and right-hand containers are equal.
 
 ![assignment-operator](assignment-operator.png)
 
@@ -281,7 +293,7 @@ Comparing two containers performs a pairwise comparison of the elements:
 
 - if both containers are the same size and all the elements are equal, then the two containers are equal; otherwise, they are unequal.
 - if the containers have different sizes but every element of the smaller one is equal to the corresponding element of the larger one, then the smaller one is less than the other.
-- if neither container is an intial subsequence of the other, then the comparison depends on comparing the first unequal elements.
+- if neither container is an initial subsequence of the other, then the comparison depends on comparing the first unequal elements.
 
 **Relational operators use their element relational operator**.
 
@@ -291,16 +303,16 @@ Instead of relying on `==`, you can use the `equal` function defined within the 
 
 ## Adding elements to a sequential container
 
-Excepting array, all of the library containers provide flexible memory management.
+Excepting `array`, all of the library containers provide flexible memory management, but for `vector` and `deque` insert in the middle is a non-efficient operation.
 
 ![adding-elements-container](adding-elements-container.png)
 ![adding-elements-container-2](adding-elements-container-2.png)
 
-Adding elements to a `vector` or a `string` may cause the entire obect to be reallocated.
+Adding elements to a `vector` or a `string` may cause the entire object to be reallocated.
 
 ## `deque`
 
-- Organizes data in chunks of memory referred by a sequence of pointers.
+- Organises data in chunks of memory referred by a sequence of pointers.
 - Like `vector` offers fast random access to its elements, provides the `push_front` member even though vector does not.
 - Guarantees *constant-time insert and delete* of elements at the beginning and end of the container.
 - Inserting elements other than at front or back is expensive operation.
@@ -323,7 +335,7 @@ The access members return references.
 
 ## The `pop_front` and `pop_back` members
 
-Remve the first and last elements, returning `void`.
+Remove the first and last elements, returning `void`.
 
 - No `pop_front` for `vector` and `string`.
 - No `pop_back` for `forward_list`.

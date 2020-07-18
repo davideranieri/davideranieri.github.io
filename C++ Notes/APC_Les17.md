@@ -1,6 +1,6 @@
 # **Algorithms and Parallel Computing - C++: Notes**
 
-# Lesson 17 - Message Passing Interface, Part 1
+# **Lesson 17 - Message Passing Interface, Part 1**
 
 ## ***PARALLEL PROGRAMMING WITH MPI***
 
@@ -38,12 +38,14 @@ Pass values from the command line to C/C++ programs when they are executed: **co
 
 Each argument is represented as a C c`har[]`. hence **argv[] type is `char*`**
 
-    #include <iostream>
+```c++
+#include <iostream>
 
-    int main(int argc, char* argv[])
-    {
-        ...
-    }
+int main(int argc, char* argv[])
+{
+    ...
+}
+```
 
 ## Compiling C++ Program
 
@@ -67,18 +69,20 @@ If, *e.g.*, no arguments are supplied, `argc` will be 1, and if you pass one arg
 
 *EXAMPLE:*
 
-    #include<cstdio>                            // C library for I/O
-    #include<mpi.h>                             // MPI library
+```c++
+#include<cstdio>                            // C library for I/O
+#include<mpi.h>                             // MPI library
 
-    int main (int argc, char * argv[])
-    {
-        MPI_Init (&argc, &argv);                // setup MPI system
-        int rank, size;
-        MPI_comm_size (MPI_COMM_WORLD, &size);  // compute dimension of global communicator (total number of processes) and assign to size
-        MPI_comm_rank (MPI_COMM_WORLD, &rank);  // rank from 0 to size-1
-        printf("Hello from process %d of %d \n", rank, size);
-        MPI_Finalize ();                        // finished using MPI, free resources allocated
-    }
+int main (int argc, char * argv[])
+{
+    MPI_Init (&argc, &argv);                // setup MPI system
+    int rank, size;
+    MPI_comm_size (MPI_COMM_WORLD, &size);  // compute dimension of global communicator (total number of processes) and assign to size
+    MPI_comm_rank (MPI_COMM_WORLD, &rank);  // rank from 0 to size-1
+    printf("Hello from process %d of %d \n", rank, size);
+    MPI_Finalize ();                        // finished using MPI, free resources allocated
+}
+```
 
 ## Compile and Run MPI
 
@@ -89,30 +93,36 @@ If, *e.g.*, no arguments are supplied, `argc` will be 1, and if you pass one arg
 
 Declarations:
 
-    int MPI_Init (int * argc_p, char *** argv_p)
+```c++
+int MPI_Init (int * argc_p, char *** argv_p)
+```
 
 The arguments are pointers to the arguments to `main`, `argc` and `argv` (which is an array of pointers). When our program doesn't use these arguments, we can just pass `nullptr` for both.
 
 Like most MPI functions, `MPI_Init` returns an `int` *error code* (in most case we'll ignore these error codes).
 
-    int MPI_Finalize (void)
+```c++
+int MPI_Finalize (void)
+```
 
-`MPI_Finalize` tells the MPI system that we're done using MPI, and tat any resources allocated for MPI can be freed. No MPI functions should be called after.
+`MPI_Finalize` tells the MPI system that we're done using MPI, and that any resources allocated for MPI can be freed. No MPI functions should be called after.
 
 ## MPI programs general structure
 
+```c++
+...
+#include<mpi.h>
+...
+int main(int argc, char * argv[])
+{
     ...
-    #include<mpi.h>
+    MPI_Init(&argc, &argv);
     ...
-    int main(int argc, char * argv[])
-    {
-        ...
-        MPI_Init(&argc, &argv);
-        ...
-        MPI_Finalize();
-        ...
-        return 0;
-    }
+    MPI_Finalize();
+    ...
+    return 0;
+}
+```
 
 ## ***POINT TO POINT COMMUNICATION***
 
@@ -132,9 +142,11 @@ Every process is identified within a communicator by means of a **rank**, a uniq
 
 Declarations:
 
-    int MPI_Comm_size (MPI_Comm comm, int * size)
+```c++
+int MPI_Comm_size (MPI_Comm comm, int * size)
 
-    int MPI_Comm_rank (MPI_Comm comm, int * rank)
+int MPI_Comm_rank (MPI_Comm comm, int * rank)
+```
 
 The first argument is a communicator and has the special type defined by MPI for communicators, `MPI_Comm`.
 
@@ -142,29 +154,33 @@ The first argument is a communicator and has the special type defined by MPI for
 
 `MPI_Comm_rank` returns in its second argument the calling process rank in the communicator.
 
-*EXAMPLE:* "Hello, world!"
+*EXAMPLE:*  "Hello, world!"
 
-    std::ostringstream builder;
-    builder << "Hello from " << rank << " of " << size;
-    std::string message (builder.str());
-    if (rank > 0)
-        MPI_Send (&message[0], max_string, MPI_CHAR,
-                0, 0, MPI_COMM_WORLD);
-    else 
+```c++
+std::ostringstream builder;
+builder << "Hello from " << rank << " of " << size;
+std::string message (builder.str());
+if (rank > 0)
+    MPI_Send (&message[0], max_string, MPI_CHAR,
+            0, 0, MPI_COMM_WORLD);
+else 
+{
+    std::cout << message << std::endl;
+    for (int r = 1; r < size; ++r)
     {
+        MPI_Recv (&message[0], max_string, MPI_CHAR, r, 0, 
+                MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         std::cout << message << std::endl;
-        for (int r = 1; r < size; ++r)
-        {
-            MPI_Recv (&message[0], max_string, MPI_CHAR, r, 0, 
-                    MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-            std::cout << message << std::endl;
-        }
     }
+}
+```
 
 ## MPI_Send
 
-    int MPI_Send (const void * buf, int count, MPI_Datatype datatype,
-                  int dest, int tag, MPI_Comm comm)
+```c++
+int MPI_Send (const void * buf, int count, MPI_Datatype datatype,
+              int dest, int tag, MPI_Comm comm)
+```
 
 The first three arguments determine the contents of the message; the remaining arguments determine the destination of the message.
 
@@ -172,16 +188,22 @@ Remember that `void *` indicates a **universal pointer**, *i.e.*, the pointer ca
 
 *EXAMPLE:*
 
-    MPI_Send (&message[0], max_string, MPI_CHAR, 0, 0, MPI_COMM_WORLD0);
+```c++
+MPI_Send (&message[0], max_string, MPI_CHAR, 0, 0, MPI_COMM_WORLD0);
+```
 
 ## MPI_Recv
 
-    int MPI_Recv (void * buf, int count, MPI_Datatype datatype,
-                  int source, int tag, MPI_Comm comm, MPI_Status * status)
+```c++
+int MPI_Recv (void * buf, int count, MPI_Datatype datatype,
+              int source, int tag, MPI_Comm comm, MPI_Status * status)
+```
 
 *EXAMPLE:*
 
-    MPI_Recv (&message[0], max_string, MPI_CHAR, r, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+```c++
+MPI_Recv (&message[0], max_string, MPI_CHAR, r, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+```
 
 ## Point to point arguments
 
@@ -197,7 +219,7 @@ Remember that `void *` indicates a **universal pointer**, *i.e.*, the pointer ca
 
 ## `tag`
 
-`tag` is a nonnegative `int`. It can be used to **distinguish messages that are otherwise identical**.
+`tag` is a non-negative `int`. It can be used to **distinguish messages that are otherwise identical**.
 
 ## Message Matching
 
@@ -221,7 +243,7 @@ There is **no restriction on the arrival of messages sent from different process
 
 ## Deadlocks
 
-Deadlocks occur when processes block communication, but their requiests remain unmatched or unprocessed.
+Deadlocks occur when processes block communication, but their requests remain unmatched or unprocessed.
 
 ## Process Hang
 

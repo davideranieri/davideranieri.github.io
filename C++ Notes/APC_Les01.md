@@ -4,7 +4,7 @@
 
 ## Object Oriented Programming: Bottom up approach
 
-- Identify the *main abstractions* that characterize the application domain and represents them in **classes**
+- Identify the *main abstractions* that characterise the application domain and represents them in **classes**
 - Assemble components by **identifying mechanisms** that allow different objects to work together
 
  A typical object oriented program instance:
@@ -20,14 +20,16 @@
 
 ## First program
 
-    #include <iostream>
-    using namespace std;
+```c++
+#include <iostream>
+using namespace std;
 
-    int main()
-    {
-        ...
-        return 0;
-    }
+int main()
+{
+    ...
+    return 0;
+}
+```
 
 `using namespace std;` allows to use `cout` instead of `std::cout`
 
@@ -37,10 +39,12 @@
 
 ## Input and Output
 
-    cin >> ... ;
-    cout << ... << endl;
+```c++
+cin >> ... ;
+cout << ... << endl;
 
-    Strings are variable-length
+Strings are variable-length
+```
 
 A variable has a **type** which determines **what operations we can do** on it
 
@@ -49,8 +53,10 @@ This is an esample of (**operator**) **overloading**: the type of a variable det
 
 ## istream
 
-    while (std::cin >> value)
-    ...
+```c++
+while (std::cin >> value)
+...
+```
 
 When we use an istream as condition, the effect is to test the state of the stream:
 
@@ -65,16 +71,20 @@ All the names defined by the standard library are in the `std` namespace
 
 a. `using` declaration
 
-    using std::cin;
-    using std::cout;
-    using std::endl;
+```c++
+using std::cin;
+using std::cout;
+using std::endl;
 
-    cin >> ... ;
-    cout<< ... << endl;
+cin >> ... ;
+cout<< ... << endl;
+```
 
 b. `using` directive
 
-    using namespace std;
+```c++
+using namespace std;
+```
 
 ## ***BUILT-IN TYPES***
 
@@ -82,19 +92,19 @@ b. `using` directive
 - **user-defined** types
 - **standard library** types, *e.g.* `string`, `vector`, `complex`
 
-1. ### Declaration and Initialization
+1. ### Declaration and Initialisation
 
 2. ### Assignment and increment
 
 ## Type checking
 
-A variable mst be used only after it has been initialized.
+A variable must be used only after it has been initialised.
 
-Not always possible to detect issues at *compile time*, sometimes they appear onl at *runtime*. For example:
+Not always possible to detect issues at *compile time*, sometimes they appear only at *run time*. For example:
 
 - Implicit narrowing
-- Uninitialized variables
-*hint:* always initialize your variables
+- Uninitialised variables
+*hint:* always initialise your variables
 
 ## Type conversion
 
@@ -125,27 +135,35 @@ A statement is:
 
 - **`while` loop**
 
-        INITIALIZE CONTROL VARIABLE ; 
-        while ( TERMINATION CRITERION ) {
-            DO SOMETHING ;
-            UPDATE CONTROL VARIABLE ;
-        }
+    ```c++
+    INITIALIZE CONTROL VARIABLE ; 
+    while ( TERMINATION CRITERION ) {
+        DO SOMETHING ;
+        UPDATE CONTROL VARIABLE ;
+    }
+    ```
 
 - **`do-while` loop**
 
-        INITIALIZE CONTROL VARIABLE ; 
-        do {
-            DO SOMETHING ;
-            UPDATE CONTROL VARIABLE ;
-        }
-        while ( TERMINATION CRITERION )
+    ```c++
+    INITIALIZE CONTROL VARIABLE ; 
+    do {
+        DO SOMETHING ;
+        UPDATE CONTROL VARIABLE ;
+    }
+    while ( TERMINATION CRITERION )
+    ```
 
 - **`for` loop**
      Can collect all the control information in one place at the top
 
-        for ( INITIALIZE CONTROL VARIABLE ; TERMINATION CRITERION ; UPDATE CONTROL VARIABLE )
+     
 
-  - **`range-for` loop**: see Vectors, available also for built-in arrays
+     ```c++
+      for ( INITIALIZE CONTROL VARIABLE ; TERMINATION CRITERION ; UPDATE CONTROL VARIABLE )
+     ```
+     
+- **`range-for` loop**: see Vectors, available also for built-in arrays
 
 ## ***ARRAYS AND STRUCTS***
 
@@ -160,59 +178,69 @@ A statement is:
 
 ## Declaration
 
-    base_type array_name[array_size];
+```c++
+base_type array_name[array_size];
+```
 
 Index range: from `0` to `array_size-1`
 
 ## Arrays and Memory allocation
 
-- memory space is allocated contiguosly
+- memory space is allocated contiguously
 - an array is a *memory address*, *i.e.*, a **pointer**
 
-## Definition and Initialization
+## Definition and Initialisation
 
-    unsigned cnt = 42;
-    constexpr unsigned sz = 42;
+```c++
+unsigned cnt = 42;
+constexpr unsigned sz = 42;
 
-    int arr[10];                    // OK: 10 is a constant value
+int arr[10];                    // OK: 10 is a constant value
 
-    string bad[cnt];                // ERROR: cnt NOT a constant expression
-    string good[sz];                // OK: sz is constant expression
+string bad[cnt];                // ERROR: cnt NOT a constant expression
+string good[sz];                // OK: sz is constant expression
 
-    string strs[get_size()];        // OK IF get_size is constexpr, ERROR
+string strs[get_size()];        // OK IF get_size is constexpr, ERROR
+```
 
 A **constant expression**:
 
-1. NOT POSSIBLE change the value of it
+1. CAN NOT change the value of it
 2. CAN be evaluated at *compile time*
 
-The elements in an array are **default initialized**
+The elements in an array are **default initialised**
 
-    const unsigned sz = 3;
+```c++
+const unsigned sz = 3;
 
-    int a1[sz] = {0,1,2};
-    int a2[] = {0,1,2};
-    int a3[5] = {0,1,2};            // equivalent to a3[] = {0,1,2,0,0}
+int a1[sz] = {0,1,2};
+int a2[] = {0,1,2};
+int a3[5] = {0,1,2};            // equivalent to a3[] = {0,1,2,0,0}
 
-    string a4[3] = {"hi", "bye"};   // equivalent to a4[] = {"hi", "bye", ""}
+string a4[3] = {"hi", "bye"};   // equivalent to a4[] = {"hi", "bye", ""}
 
-    int a5[2] = {0,1,2};            // ERROR: too many initializers
+int a5[2] = {0,1,2};            // ERROR: too many initializers
+```
 
 ## NO Copy or Assignment
 
-- NOT POSSIBLE initialize an array as copy of another array
-- NOT POSSIBLE assign one arra to another
+- NOT POSSIBLE initialise an array as copy of another array
+- NOT POSSIBLE assign one array to another
 - NOT POSSIBLE compare two arrays through `==`
 
-        int a1[] = {0,1,2};
-        int a2[] = a1;                  // ERROR
-        a2 = a;                         // ERROR
+    ```c++
+    int a1[] = {0,1,2};
+    int a2[] = a1;               // ERROR
+    a2 = a;                      // ERROR
+    ```
 
 - Copy needs to be performed element by element
 
-        int a2[3];
-        for (unsigned i = 0; i < 3; ++i)
-            a2[i] = a1[i];
+    ```c++
+    int a2[3];
+    for (unsigned i = 0; i < 3; ++i)
+        a2[i] = a1[i];
+    ```
 
 ## Multiple dimensional arrays: **Matrices**
 
@@ -220,9 +248,11 @@ An array element can be another array.
 
 Declaration:
 
-    int matrix [SZ2][SZ1];              // SZ2 rows, SZ1 columns
+```c++
+int matrix [SZ2][SZ1];              // SZ2 rows, SZ1 columns
 
-    matrix[i][j]                        // j-th element of i-th array
+matrix[i][j]                        // j-th element of i-th array
+```
 
 Elements are stored by rows
 
@@ -248,15 +278,21 @@ A declaration that (also) *fully* specifies the entity declared is called a defi
 
 *EXAMPLE:* declarations that are not definitions
 
-    double sqrt(double);                // function body missing
-    struct Point;                       // members specified elsewhere
+```c++
+double sqrt(double);                // function body missing
+struct Point;                       // members specified elsewhere
+```
 
 ## Properties
 
 - NOT POSSIBLE **define** something twice
-- CAN **declare** somehing twice
-        double sqrt(double);                // declaration
-        double sqrt(double d) { ... }       // definition (so declaration)
+
+- CAN **declare** something twice (*e.g.*, declaration and definition)
+  
+    ```c++
+    double sqrt(double);				// declaration
+    double sqrt(double d) { ... }		// definition (so declaration)
+    ```
 
 ## Why both?
 
@@ -264,7 +300,7 @@ To refer to something, we need only its declaration. Often we want definition el
 
 **Declarations** **are used to specify interfaces**
 
-Place alle declarations in **header files**
+Place all declarations in **header files**
 
 ## ***HEADER FILES***
 
@@ -272,23 +308,29 @@ Purpose of a header (*.hpp*) file is to propagate declarations to code files (*.
 
 ## Source and header files
 
-    #include "MyFriendLibrary.h"
+```c++
+#include "MyFriendLibrary.h"
+```
 
 is a **preprocessor directive** that *adds declarations to the program*.
 Header file holds declarations of functions, types, constants, and other program components.
 
 ## `MyFriendLibrary.h`
 
-    #ifndef MY_FRIEND_LIBRARY_H
-    #define MY_FRIEND_LIBRARY_H
+```c++
+#ifndef MY_FRIEND_LIBRARY_H
+#define MY_FRIEND_LIBRARY_H
 
-    ...
+...
 
-    #endif
+#endif
+```
 
 ## `MyFriendLibrary.cpp`
 
-    #include "MyFriendLibrary.h"
+```c++
+#include "MyFriendLibrary.h"
+```
 
 ## ***CLASSES***
 
@@ -313,7 +355,7 @@ Classes implements a very important concept: **Abstract Data Type**
 Distinguish:
 
 - WHAT the software DOES: set of services provided (**interface**)
-- HOW the software is bilt: module internals (**implementation**)
+- HOW the software is built: module internals (**implementation**)
 
 - Exports:
   - one type (only the name)
@@ -322,7 +364,7 @@ Distinguish:
   - type structure
   - operations implementation
 
-The user can create objects (data) of the type specified by the module and manipulete these objects through the operations defined within the module
+The user can create objects (data) of the type specified by the module and manipulate these objects through the operations defined within the module
 
 ## Interface
 
@@ -340,11 +382,11 @@ This implies that two subsequent calls to the same function can give different r
 
 ## Definition of a CLASS
 
-A **class** is an Abstract Data Type characterized by:
+A **class** is an Abstract Data Type characterised by:
 
 1. **Interface** (PUBLIC PART)
 
-    - properties, variables or data members (to avoid, preferibly)
+    - properties, variables or data members (to avoid, preferably)
     - procedures/functions (or methods)
 
 2. **Implementation** (PRIVATE PART)
@@ -363,43 +405,47 @@ An **object** is a *computational entity* that:
 
 ## Classes - C++ general syntax
 
-    class X {
-        public:                         // INTERFACE
-        ...                             // functions, types, data
-        ...                             // accessible by all
+```c++
+class X {
+    public:                         // INTERFACE
+    ...                             // functions, types, data
+    ...                             // accessible by all
 
-        private:                        // IMPLEMENTATION
-        ...                             // functions, types, data
-        ...                             // accessible by members of this class only
-    }
+    private:                        // IMPLEMENTATION
+    ...                             // functions, types, data
+    ...                             // accessible by members of this class only
+}
+```
 
 *EXAMPLE:* class Stack
 
-    const int max_size = 10;
+```c++
+const int max_size = 10;
 
-    class Stack {
-        public:
-        Stack() { top_index = -1; }     // CONSTRUCTOR
-        void push(int x);
-        int pop();
-        int top() const;
-        ~Stack() { std::cout << "Stack deallocated"; }
+class Stack {
+    public:
+    Stack() { top_index = -1; }     // CONSTRUCTOR
+    void push(int x);
+    int pop();
+    int top() const;
+    ~Stack() { std::cout << "Stack deallocated"; }
 
-        private:
-        bool isEmpty() const;
-        bool isFull() connst;
+    private:
+    bool isEmpty() const;
+    bool isFull() connst;
 
-        int top_index;
-        int a[max_size];
+    int top_index;
+    int a[max_size];
 
-    };
+};
+```
 ***REMARK:*** `const` at the end of the declaration of a function means that the method execution **doesn't change the object status**
 
 ## Constructor
 
 - Method used to **define the initial state of the object**
 - Same name as the class
-- Automatically invoked by the run-time support of the language every time an object is created
+- Automatically invoked by the *run time* support of the language every time an object is created
 - Can have parameters
 - Can be defined more than one (function overloading)
 - *Default constructor* (without any parameter)
@@ -411,8 +457,8 @@ An **object** is a *computational entity* that:
 - No return value
 - No parameters
 - Only one destructor for class
-- Do everything is necessart to free the resources used by an object
-- *Default destructor* which does**nothing** when it has not been defined by developer
+- Do everything is necessary to free the resources used by an object
+- *Default destructor* which does **nothing** when it has not been defined by developer
 
 ## Source files
 
@@ -433,8 +479,10 @@ This implies that the name of the claass and the set of methods and attributes m
 
 To use a vector, we **must include the appropriate header**
 
-    #include <vector>
-    using std::vector;
+```c++
+#include <vector>
+using std::vector;
+```
 
 - A vector is a **class template**, provided by the *STL** (Standard Template Library)
 
@@ -446,42 +494,52 @@ Templates are not themselves functions or classes. Instead, can be thought as **
 
 When we use a template, we specify what kind of class or function we want the compiler to instantiate (*e.g.* `vector<double>`)
 
-**A `vector<T>` holds a sequence of calues of type `T`**
+**A `vector<T>` holds a sequence of values of type `T`**
 
-    vector<int> v;                      // start off empty
-    v.push_back(1);                     // add element with value 1
+```c++
+vector<int> v;                      // start off empty
+v.push_back(1);                     // add element with value 1
+```
 
 **Initialization with a list**
-    v = { 1,2,3,4,5,6 }
+
+​	```v = { 1,2,3,4,5,6 }```
 
 ## Range-For loop
-    for (TYPE ELEMENT : VECTOR)         // for each element in the vector
+```c++
+for (TYPE ELEMENT : VECTOR)         // for each element in the vector
+```
 
 *EXAMPLE:*
 
-    vector<int> v = { 1,2,3,5,7 }
-    for (int x : v) cout << x << '\n';
+```c++
+vector<int> v = { 1,2,3,5,7 }
+for (int x : v) cout << x << '\n';
+```
 
 *EXAMPLE:*
 
-    int main()
-    unsigned scores[11] = {};
-    unsigned grade;
+```c++
+int main() {
+unsigned scores[11] = {};
+unsigned grade;
 
-    while (cin >> grade) {
-        if (grade <= 100)
-            ++scores[grades/10];
-    }
+while (cin >> grade) {
+    if (grade <= 100)
+        ++scores[grades/10];
+}
 
-    for (unsigned i : scores)
-        cout << i << " ";
-    cout << endl;
+for (unsigned i : scores)
+    cout << i << " ";
+cout << endl;
+}
+```
 
 ## INITIALIZATION
 
 - `vector<T> v1`
   
-  Default initialization, `v1` is **empty**
+  Default initialisation, `v1` is **empty**
 
 - `vector<T> v2(v1)` or `vector<T> v2 = v1`
 
@@ -533,15 +591,17 @@ We can fetch a given element using the **subscript operator** (**indexing starti
 
 *EXAMPLE:*
 
-    vector<int> ivec;                   // empty vector
+```c++
+vector<int> ivec;                   // empty vector
 
-    for (int ix = 0; ix != 10; ++ix)
-        ivec[ix] = ix;                  // DISASTER: ivec has no elements
-    
-    for (int ix = 0; ix != 10; ++ix)
-        ivec.push_back(ix)              // OK
+for (int ix = 0; ix != 10; ++ix)
+    ivec[ix] = ix;                  // DISASTER: ivec has no elements
 
-A good way to ensure that subscripts are in range is to avoid subscripting altogeher by using a **range fore**
+for (int ix = 0; ix != 10; ++ix)
+    ivec.push_back(ix)              // OK
+```
+
+A good way to ensure that subscripts are in range is to avoid subscripting altogether by using a **range fore**
 
 ## STL ARRAYS
 
@@ -553,11 +613,13 @@ Advantages:
 
 - NO comparison operators (available in future C++ 20)
 
-         #include <array>
-
-        int main() {
+     ```c++
+#include <array>   
+     int main() {
             array<int, 3> c = {1,2,3}
         }
+     ```
+     
 
 ## ***READINGS: STRINGS***
 
@@ -565,15 +627,19 @@ A **string** is a *variable-length* sequence of characters
 
 Needed the string header. Because it is part of the library, string is defined in the standard library.
 
-    #include <string>
-    using std::string;
+```c++
+#include <string>
+using std::string;
+```
 
 ## Definition and Initialization
 
-    string s1;                          // default init. s1 empty string
-    string s2 = s1                      // s2 copy of s1
-    string s3 = 'hey'                   // s3 copy of string literal
-    string s4(10,'c')                   // s4 is "cccccccccc"
+```c++
+string s1;                          // default init. s1 empty string
+string s2 = s1                      // s2 copy of s1
+string s3 = 'hey'                   // s3 copy of string literal
+string s4(10,'c')                   // s4 is "cccccccccc"
+```
 
 ## **Direct** and **Copy** forms of **initialization**
 
@@ -591,13 +657,13 @@ When we initialize a variable using =, we are asking the compiler to **copy init
 
     string s4 = s1 + ", ":              // OK: adding a string and a literal
     string s5 = "hello" + ", ";         // ERROR: no string operand
-
+    
     string s7 = "hello" + ", " + s2;    // ERROR: can't add string literals
 
 ## Strings C++ vs. C
 
 - There are two ways to access individual characters in a string: **subscript** or **iterator**
-- The **subscript operator []** takes a `sring::size_type` value that denotes the position of the character we want to access. The operator returns a reference to the character at given position
+- The **subscript operator [ ]** takes a `string::size_type` value that denotes the position of the character we want to access. The operator returns a reference to the character at given position
 - Subscripts for strings start at zero; last character is size - 1
 
 ## String operations

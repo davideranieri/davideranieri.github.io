@@ -1,6 +1,6 @@
 # **Algorithms and Parallel Computing - C++: Notes**
 
-# Lesson 20 - Functional C++
+# **Lesson 20 - Functional C++**
 
 ## ***FUNCTIONS AS VALUES***
 
@@ -20,19 +20,21 @@ When you implement a public `operator ()`, the class becomes callable.
 
 *EXAMPLE:*
 
-    // NO working
+```c++
+// NO working
 
-    unsigned count_if (is_small const & f, std::vector<int> const & v)
+unsigned count_if (is_small const & f, std::vector<int> const & v)
 
-    unsigned small_no = count_if(is_small(), my_vector);
-    unsigned large_no = count_if(is_large(), my_vector);                            // NO, need new overload
+unsigned small_no = count_if(is_small(), my_vector);
+unsigned large_no = count_if(is_large(), my_vector);                            // NO, need new overload
 
-    // YES working
+// YES working
 
-    unsigned count_if (std::function<bool(int)> const & f, std::vector<int> const & v)
+unsigned count_if (std::function<bool(int)> const & f, std::vector<int> const & v)
 
-    unsigned small_no = count_if(is_small(), my_vector);
-    unsigned large_no = count_if(is_large(), my_vector);                            // OK
+unsigned small_no = count_if(is_small(), my_vector);
+unsigned large_no = count_if(is_large(), my_vector);                            // OK
+```
 
 `<functional>` defines several callable class templates. Most operators have an equivalent **function object**:
 
@@ -40,21 +42,23 @@ When you implement a public `operator ()`, the class becomes callable.
 
 *EXAMPLE:* Sum operation
 
-    // "normal" definition
-    double sum (std::vector<double> const & values) {
-        double result(0.0);
-        for (double v : values)
-            result = result + v;
-        return result;
-    }
+```c++
+// "normal" definition
+double sum (std::vector<double> const & values) {
+    double result(0.0);
+    for (double v : values)
+        result = result + v;
+    return result;
+}
 
-    // with callable object
-    double sum (std::vector<double> const & values) {
-        double result(0.0);
-        std::plus<double> op;                                                       // note the plus<double>
-        for (double v : values)
-            result = op(result, v);
-        return result;
-    }
+// with callable object
+double sum (std::vector<double> const & values) {
+    double result(0.0);
+    std::plus<double> op;                                                       // note the plus<double>
+    for (double v : values)
+        result = op(result, v);
+    return result;
+}
 
-    aaaa
+aaaa
+```

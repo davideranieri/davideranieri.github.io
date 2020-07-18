@@ -13,28 +13,30 @@ Constructor have;
 
 Multiple constructor *must differ* from each other in the number or types of their parameters (function overloading).
 
-Constructors may not be declared as const: when we create a const object of a class type, the object does not assume its constness until after the constructor completes the object's initialization.
+Constructors may not be declared as const: when we create a const object of a class type, the object does not assume its constancy until after the constructor completes the object's initialization.
 
 *EXAMPLE:* **In-class initializer**
 
-    class Sales_data {
-    public:
-        std::string isbn() const { return bookNo; }    
-        Sales_data& operator+=(const Sales_data&);
-    private:
-        std::string bookNo;
-        unsigned units_sold = 0;        // in-class initializer
-        double revenue = 0.0;           // in-class initializer
-    };
+```c++
+class Sales_data {
+public:
+    std::string isbn() const { return bookNo; }    
+    Sales_data& operator+=(const Sales_data&);
+private:
+    std::string bookNo;
+    unsigned units_sold = 0;        // in-class initializer
+    double revenue = 0.0;           // in-class initializer
+};
+```
 
-## Default Constructos
+## Default Constructors
 
 Classes control *default initialization* by a special constructor, known as the **default constructor**: it takes **no arguments**.
 
 If class does not *explicitly* define any constructors, it will be implicitly defined by the compiler. When you don't define a default constructor, the compiler will generate the default constructor called **synthesized default constructor**, in this way:
 
 - if there is an in-class initializer, use it to initialize the member
-- otherwise, default-initialize the member (*e.g.* for a string, it will default initialize to the empty string).
+- otherwise, default-initialise the member (*e.g.* for a string, it will default initialize to the empty string).
 
 
 The compiler generates the default for us *only if we do not define any other constructors*: if we define any constructors, the class will not have a default constructor unless we define that constructor ourselves explicitly.
@@ -59,66 +61,70 @@ The default constructor is used **automatically** whenever an object is **defaul
 
 *EXAMPLE:* `Sales_data` constructors
 
-    class Sales_data {
-        public:
-            Salesdata() = default;
-            Sales_data(const std::string &s): bookNo(s) { }             // bookNo(s), units_sold(0), revenue(0) { }
-            Sales_data(const std::string &s, unsigned n, double p):
-                        bookNo(s), units_sold(n), revenue(p*n) { }
+```c++
+class Sales_data {
+    public:
+        Salesdata() = default;
+        Sales_data(const std::string &s): bookNo(s) { }             // bookNo(s), units_sold(0), revenue(0) { }
+        Sales_data(const std::string &s, unsigned n, double p):
+                    bookNo(s), units_sold(n), revenue(p*n) { }
 
-            std::string isbn() const { return bookNo; }
-            Sales_data& operator+=(const Sales_data&);
-            double avg_price() const;
-        private:
-            std::string bookNo;
-            unsigned units_sold = 0;
-            double revenue = 0.0;
-    };
+        std::string isbn() const { return bookNo; }
+        Sales_data& operator+=(const Sales_data&);
+        double avg_price() const;
+    private:
+        std::string bookNo;
+        unsigned units_sold = 0;
+        double revenue = 0.0;
+};
+```
 
 `bookNo(s), units_sold(n), revenue(p*n)` are called **Constructor Initializer List**
 
 ## Constructor Initializer List
 
-When we define variables, we typically initialize them immediately rather than defining than defining them and then assigning to them.
+When we define variables, we typically initialize them immediately rather than defining them and then assigning to them.
 
 Constructor Initializers are sometimes required; we can often, but not always, ignore the distinction between whether a member is initialized or assigned:
 
-- members that are const or references must be initialized
+- members that are **const** or **references** **MUST BE initialized**
 - members that are of a class type that does not define a default constructor also must be initialized
 
 ## Delegating Constructors
 
-A delegating constructor uses another constructor from its own class to perform its initialization
+A delegating constructor uses another constructor from its own class to perform its initialization. Very used in inheritance framework (derived constructor delegates a part of initialization to base class constructor).
 
 *EXAMPLE:*
 
-    class Sales_data {
-        public:
-        Sales_data(std::string s, unsigned cnt, double price):
-                   bookNo(s), units_sold(cnt), revenue(cnt*price) { }       // constructor 1  
-        Sales_data(): Sales_data("", 0,0) { }                               // constructor 2, takes no arguments
-        Sales_data(std::string s): Sales_data(s, 0, 0) {}                   // constructor 3
-    };
+```c++
+class Sales_data {
+    public:
+    Sales_data(std::string s, unsigned cnt, double price):
+               bookNo(s), units_sold(cnt), revenue(cnt*price) { }       // constructor 1  
+    Sales_data(): Sales_data("", 0,0) { }                               // constructor 2, takes no arguments
+    Sales_data(std::string s): Sales_data(s, 0, 0) {}                   // constructor 3
+};
+```
 
 ## Constructor and initialization order
 
 How a constructor works to initialize an object:
 
-1. Initializers lists; but members are initialized in order as they appear in the class declaration
+1. Initializers lists are run first but members are initialized in order as they appear in the class declaration
 2. (non-static) data members are initialized in order of declaration in the class definition according to in-class initializers
 3. body of the constructor `{ }`
 
 ## Copy, Assignment and Destruction
 
 - Objects **are copied** when:
-  - **initialize a variable**
+  - **initialise a variable**
   - **pass or return** an object **by value**
   - use **assignment operator**
 - Objects **are destroyed** when:
   - they **cease to exist**, such as when a local object is destroyed
   - **objects stored in a vector** (or an array) are destroyed when that vector (or array) is destroyed
 
-If we do not define these operations (coyping assigning, destroying), the compiler will sythesize them for us. But beware that some classes cannot rely on the synthesized versions.
+If we do not define these operations (copying assigning, destroying), the compiler will sythesize them for us. But beware that some classes cannot rely on the synthesized versions.
 
 ## ***DEFINING A TYPE MEMBER***
 

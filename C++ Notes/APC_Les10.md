@@ -4,13 +4,13 @@
 
 ## ***ENCAPSULATION***
 
-**Encapsulatoin**: binds the data and function in one form known as *Class*. By thinking the system as composed of independent objects, we keep sub-parts really independent. They communicate only through well-defined method invocation.
+**Encapsulation**: binds the data and function in one form known as *Class*. By thinking the system as composed of independent objects, we keep sub-parts really independent. They communicate only through well-defined method invocation.
 
 Building the system as a group of interacting objects: modularity.
 
 ## ***INHERITANCE***
 
-Provides a way to *create a new class from an existing class*; the new class is a **specialized version**.
+Provides a way to *create a new class from an existing class*; the new class is a **specialised version**.
 
 Motivations: code reuse and evolution.
 
@@ -29,8 +29,8 @@ A derived object has **all** of the characteristics of the base class.
 
 The derived type is just the base type plus:
 
-- added *specializations*: change implementation (private part) without changing the base class interface (public)
-- added *generalizations/extensions*: new operations and/or data
+- added *specialisations*: change implementation (private part) without changing the base class interface (public)
+- added *generalisations/extensions*: new operations and/or data
 
 ## What a derived class **inherits**:
 
@@ -53,9 +53,11 @@ Since all these functions are class-specific.
 
 ## Inheritance - C++ syntax
 
-    class DerivedClassName: access-level BaseClassName {
+```c++
+class DerivedClassName: access-level BaseClassName {
 
-    };
+};
+```
 
 where **access-level** *specifies the type of derivation*: `private` by default, `public`, `protected`. We will use always and only public inheritance.
 
@@ -68,6 +70,7 @@ An object (an instance of the class) of the derived class has:
 - all members *defined* in child class
 - all members *declared* in parent class
   
+
 An object of the derived class can use:
 
 - all `public` members defined in child class
@@ -82,8 +85,8 @@ An object of the derived class can use:
 ## Modes of Inheritance:
 
 - **public mode**: if we derive a sub class from a public base class, then the public members of the base class will become public in the derived class and protected members will become private in the derived class; note that outside a class, a protected member behaves like a private member (for base class objects).
-- **protected mode**: if we derive a sub class from a protected base class, then both public member and protected members of the base class will become protected in derived class.
--  **privete mode**: if we derive a sub class from a private base class, then both public members of the base class will become private in the derived class.
+- **protected mode**: if we derive a sub class from a protected base class, then both public member and protected members of the base class will become protected in derived class, so they will be seen as private outside the class.
+-  **private mode**: if we derive a sub class from a private base class, then both public members of the base class will become private in the derived class.
 
 *Note:* the private members in the base class can't be directly accessed in the derived class, while protected members can be directly accessed.
 
@@ -91,7 +94,7 @@ An object of the derived class can use:
 
 ## `protected` members
 
-- Like `private`, `protected` members are **inaccessible** (from outside the class) to users of the class (other objects belongint to other classes).
+- Like `private`, `protected` members are **inaccessible** (from outside the class) to users of the class (other objects belonging to other classes).
 - Like `public`, `protected` members are **accessible** to members (and friends) of classes derived from this class.
 - A derived class member may access the protected members of the base class **only through a derived object**. The derived class has *no special access to the protected members of base-class objects*. For example, class `Base` and `Derived`, method `Derived::get()` can access protected members of `Derived` (inherited from `Base`); not access to `Base`, infact `Derived::get(BaseObj)` gives error. It's not as a friend.
 
@@ -103,7 +106,7 @@ So:
 
 ## Construction of a derived object
 
-`Derived` is really two parts: a `Base` part and a `Derived` part. When C++ constructs derived objects, it does so in phases: first, the most-base class (at the top of the inheritance tree) is constructed first; then each child class is constructed in order, until the most-child class (at the bottomof the inheritance tree) in constructed last.
+`Derived` is really two parts: a `Base` part and a `Derived` part. When C++ constructs derived objects, it does so in phases: first, the most-base class (at the top of the inheritance tree) is constructed first; then each child class is constructed in order, until the most-child class (at the bottom of the inheritance tree) in constructed last.
 So, when we instantiate an instance of `Derived`, first the `Base` portion of `Derived` is constructed (using the `Base` **default constructor**). At this point, there are no more derived classes, so we are done.
 
 [***source***](https://www.learncpp.com/cpp-tutorial/115-inheritance-and-access-specifiers/)
@@ -114,54 +117,62 @@ So, when we instantiate an instance of `Derived`, first the `Base` portion of `D
 
 *EXAMPLE:*
 
-    class Grade {
-        private:
-            char letter;
-            floar score;
-            void calcGrade();
-        public:
-            void setScore(float);
-            float getScore();
-            char getLetter();
-    };
+```c++
+class Grade {
+    private:
+        char letter;
+        float score;
+        void calcGrade();
+    public:
+        void setScore(float);
+        float getScore();
+        char getLetter();
+};
 
-    class Test : public Grade {
-        private:
-            int numQuestions;
-            float pointsEach;
-            int numMissed;
-        public:
-            Test(int, int);
-    };
+class Test : public Grade {
+    private:
+        int numQuestions;
+        float pointsEach;
+        int numMissed;
+    public:
+        Test(int, int);
+};
+```
 
 When `Test` class inherits from `Grade` class using `public` class access (mode of inheritance), it looks like this:
 
-    class Test {
-        private:
-            int numQuestions;
-            float pointsEach;
-            int numMissed;
-        public:
-            Test(int, int);
-            void setScore(float);
-            float(getScore);
-            char getLetter();
-    }
+```c++
+class Test {
+    private:
+        int numQuestions;
+        float pointsEach;
+        int numMissed;
+    public:
+        Test(int, int);
+        void setScore(float);
+        float(getScore);
+        char getLetter();
+}
+```
 
 A `Test` object includes also a `letter` and `score`, **which can be accessed through public methods but not directly in the `Test` class code**. For example, if we define a new method for `Test`
 
-    void Test::printLetter() { cout << letter << endl; }
+```c++
+void Test::printLetter() { cout << letter << endl; }
+```
 
 This return an error, because, even if `printLetter` is a method of `Test`, because member `letter` is private in the base class `Grade`. A fix could be
 
-    void printLetter(Test& t) { cout << t.getLetter() << endl; }
+```c++
+void printLetter(Test& t) { cout << t.getLetter() << endl; }
+```
 
 where, keep in mind, the method `getLetter` is inherited from the base class.
 
 ## When a derived-class object is created and destroyed
 
-- The base class constructor is called to initialize the data members inherited from the base class.
-- The derived class constructor is then called to initialize the data members added in the derived class.
+- The base class constructor is called to initialise the data members inherited from the base class.
+- The derived class constructor is then called to initialise the data members added in the derived class.
 - The derived class destructor is called on the object first.
 - The base class destructor is called on the object.
 
@@ -174,13 +185,13 @@ In the absence of inheritance, class have two different kinds of users:
 
 Under inheritance, there is a third kind of user:
 
-- **Derived Classes**: a base class makes protected those parts of its implementation that it is willing to let its derived classes use; protected members remain inaccesible to ordinary user code; private members remain inaccessible to derived classes.
+- **Derived Classes**: a base class makes protected those parts of its implementation that it is willing to let its derived classes use; protected members remain inaccessible to ordinary user code; private members remain inaccessible to derived classes.
 
 A class that is used as a base class makes its interface members public. An implementation member should be protected; if it provides an operation or data that a derived class will **need** to use in its own implementation (should be private otherwise).
 
 ### ***POLYMORPHISM AND VIRTUAL MEMBER FUNCTIONS***
 
-**Polymorphism**: the ability of objects to respond *differently* to the *same message or functon call*.
+**Polymorphism**: the ability of objects to respond *differently* to the *same message or function call*.
 
 An object has *multiple identities* based on its class inheritance tree.
 
@@ -201,57 +212,62 @@ A **subclass can overwrite**, *i.e.*, change, a base class method behaviour. Thr
 
 **Redefining function**: function in a *derived class* has the **same name and parameter list** (*overloading function has different parameter list for each instance*).
 
-In C++ a base class dinstiguishes functions that are type dependent from those that it expects its derived classes to inherit without change; the base class defines as **virtual** those functions it expects its derived classes to define for themselves.
+In C++ a base class distinguishes functions that are type dependent from those that it expects its derived classes to inherit without change; the base class defines as **virtual** those functions it expects its derived classes to define for themselves.
 
-Derived classes frequently, bt not always, **override** (so polymorphism) the virtual functions that they inherit: if a derived class does not (redefine or) override a virtual from its base, then, like any ther member, the derived class inherits the version defined in its base class.
+Derived classes frequently, but not always, **override** (so polymorphism) the virtual functions that they inherit: if a derived class does not (redefine or) override a virtual from its base, then, like any their member, the derived class inherits the version defined in its base class.
 
 ## Polymorphism and Virtual Member Functions
 
 **Virtual member function**: function in base class that expects to be redefined in derived class.
 
-    virtual void y() { ... }
+```c++
+virtual void y() { ... }
+```
 
 **Dynamic binding**: functions bound at run time to function that they call.
 
-Without `virtual`, C++ uses **static** (*compile time*) **binding** and it is only function redefinition.
+Without `virtual`, C++ uses **static** (*compile time*) **binding** and it is only **function redefinition**.
 
 *EXAMPLE:*
 
 - Base class:
 
-        class Quote {
-            public:
-                ...
-                virtual double net_price(size_t cnt) const { retunr n*price; }
-                virtual ~Quote() = default;
-            private:
-                ...
-            protected:
-                ...
-        };
+    ```c++
+    class Quote {
+        public:
+            ...
+            virtual double net_price(size_t cnt) const { retunr n*price; }
+            virtual ~Quote() = default;
+        private:
+            ...
+        protected:
+            ...
+    };
+    ```
 
 - Derived class:
 
-        class Bulk_quote : public Quote {
-            public:
-            ...
-            double net_price(size_t cnt) const override;
-        };
+    ```c++
+    class Bulk_quote : public Quote {
+        public:
+        ...
+        double net_price(size_t cnt) const override;
+    };
+    ```
 
 ## Dynamic Binding
 
 Through dynamic binding we *can use the same code* to process objects of either the base or the derived class type interchangeably.
 
 Considering the last example:
-
-    double print_total(const Quote& item, size_t n)
+```c++
+double print_total(const Quote& item, size_t n)
     {
         // depending on the type of the object bound to item, calls either Quote::net_price or Bulk_quote::net_price
-
-
-        double ret = item.net_price(n);
-        return ret;
-    }
+    double ret = item.net_price(n);
+    return ret;
+}
+```
 
 **Polymorphism requires References or Pointers**.
 
@@ -265,15 +281,15 @@ Considering the last example:
 
 ## Redefining vs Overriding
 
-- **Redefining**: *statically bound*,*non-virtual*
+- **Redefining**: *statically bound*, *non-virtual*
 - **Overriding**: *dynamically bound*, *virtual*
 
 ## ***DERIVED-TO-BASE CONVERSION***
 
 A derived object contains multiple parts:
 
-- a subobject containing the (nonstatic) members **defined** in the derived class itself
-- the subobjects corresponding to each base class from which the derived class **inherits**
+- a sub-object containing the (non-static) members **defined** in the derived class itself
+- the sub-objects corresponding to each base class from which the derived class **inherits**
 
 So, we **can use an object of a derived type as if it were an object of its base type(s)**. We can bind a base-class reference or pointer to the base-class *part* of a derived object; for example, if I have a pointer `Base *p` that points to `Derived d`, I can't `p->New_member`, where `New_member` has been defined in `Derived`
 
@@ -296,15 +312,17 @@ The dynamic type of an *expression* that it **neither a reference, neither a poi
 
 ## Derived-Class Constructors
 
-A derived object containst members that it inherits from its base but it *cannot directly initialize* those members. A derived class must **use a base-class constructor** to initialize its base-class part.
+A derived object contains members that it inherits from its base but it *cannot directly initialise* those members. A derived class must **use a base-class constructor** to initialise its base-class part.
 
 *EXAMPLE:*
 
-    Bulk_quote::Bulk_quote(const string& book, double p,
-                            size_t qty, double disc) :
-                Quote(book, p), min_qty(qty), discount(disc) { }
+```c++
+Bulk_quote::Bulk_quote(const string& book, double p,
+                        size_t qty, double disc) :
+            Quote(book, p), min_qty(qty), discount(disc) { }
+```
 
-The base part of a derived object is default initialized. To use a different base-class constructor, we provide a constructor initializer using the name of the base class, followed by a parenthesized ist of arguments.
+The base part of a derived object is default initialised. To use a different base-class constructor, we provide a constructor initializer using the name of the base class, followed by a parenthesized list of arguments.
 
 ## Inheritance and `static` Members
 
@@ -314,7 +332,7 @@ Static members obey normal access control. Assuming the member is accessible, **
 
 ## ***ABSTRACT CLASSES***
 
-## Abstratc Base Classes and Pure Virtual Functions
+## Abstract Base Classes and Pure Virtual Functions
 
 **Pure virtual function** is a virtual member function that **must be overridden** in a derived class that has objects; **must have no function definition in the base class**.
 
@@ -322,9 +340,11 @@ Static members obey normal access control. Assuming the member is accessible, **
 
 Notation:
 
-    virtual void f() = 0;
+```c++
+virtual void f() = 0;
+```
 
-A class becomes an abstract base class when one or more of its member functions is a pure virtual function.
+**A class becomes an abstract base class when one or more of its member functions is a pure virtual function.**
 
 Note that abstract base classes:
 
@@ -340,7 +360,7 @@ For example, given an inheritance tree of three levels, with abstract base class
 
 ## Wrapping up
 
-Inheritance is a mechanism for defining new class types to be a specialization or an augmentation of existing types.
+Inheritance is a mechanism for defining new class types to be a specialisation or an augmentation of existing types.
 
 In principle, every member of a base class is inherited by a derived class with different access permissions, expect for the constructors.
 
